@@ -1,0 +1,27 @@
+﻿using System.Runtime.InteropServices;
+
+namespace Uno.UI.Demo
+{
+	public class Program
+	{
+		private static App _app = null!;
+
+		public static void Main(string[] args)
+		{
+#if ENABLE_EXCEPTIONS_LOGGING
+			MonoInternals.mono_trace_enable(1);
+			MonoInternals.mono_trace_set_options("E:all");
+#endif
+
+			Microsoft.UI.Xaml.Application.Start(_ => _app = new App());
+		}
+	}
+
+	static class MonoInternals
+	{
+		[DllImport("__Native")]
+		internal static extern void mono_trace_enable(int enable);
+		[DllImport("__Native")]
+		internal static extern int mono_trace_set_options(string options);
+	}
+}

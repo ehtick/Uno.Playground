@@ -1,0 +1,24 @@
+<Project ToolsVersion="15.0">
+  <!--
+    To update the version of Uno, you should instead update the Sdk version in the global.json file.
+
+    See https://aka.platform.uno/using-uno-sdk for more information.
+    See https://aka.platform.uno/using-uno-sdk#implicit-packages for more information regarding the Implicit Packages.
+  -->
+  <ItemGroup>
+    <!-- Uno.Playground -->
+    <PackageVersion Include="Microsoft.TypeScript.MSBuild" Version="4.5.2" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageVersion Include="Uno.Monaco.Editor" Version="2.0.0-dev.60" />
+    <PackageVersion Include="Uno.CommunityToolkit.WinUI.DeveloperTools" Version="7.1.200" />
+    <PackageVersion Include="Uno.CommunityToolkit.WinUI.UI.Controls" Version="7.1.200" />
+    <PackageVersion Include="Uno.CommunityToolkit.WinUI.UI.Controls.DataGrid" Version="7.1.200" />
+    <PackageVersion Include="Uno.Core.Extensions.Compatibility" Version="4.1.1" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
+
+    <!-- Uno.Playground.Api -->
+    <PackageVersion Include="Microsoft.NET.Sdk.Functions" Version="1.0.24" />
+    <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" />
+  </ItemGroup>
+</Project>
