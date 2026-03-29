@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Uno.Playground/Uno.Playground.csproj" />
+  <Project Path="Uno.Playground.Api/Uno.Playground.Api.csproj" />
+</Solution>

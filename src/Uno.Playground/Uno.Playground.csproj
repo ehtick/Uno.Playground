@@ -1,0 +1,63 @@
+<Project Sdk="Uno.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFrameworks>net10.0-browserwasm</TargetFrameworks>
+		<AssemblyName>Uno.Playground</AssemblyName>
+		<RootNamespace>Uno.Playground</RootNamespace>
+		<UnoSingleProject>true</UnoSingleProject>
+
+		<!-- Playground relies on runtime XAML parsing (XamlReader.Load), ExpandoObject
+		     data binding, and Newtonsoft.Json deserialization — all reflection-heavy.
+		     Trimming must be disabled to preserve these code paths. -->
+		<PublishTrimmed>false</PublishTrimmed>
+		<TypeScriptConfig>Platforms\WebAssembly\tsconfig.json</TypeScriptConfig>
+		<TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+
+		<UnoFeatures>
+			NativeRenderer;
+			Material;
+			Toolkit;
+			Lottie;
+			MediaElement;
+		</UnoFeatures>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="Platforms\WebAssembly\WasmCSS\**\*.css" />
+		<EmbeddedResource Include="Platforms\WebAssembly\WasmScripts\**\*.js" />
+
+		<UpToDateCheckInput Include="Platforms\WebAssembly\ts\**\*" />
+		<UpToDateCheckInput Include="Platforms\WebAssembly\WasmCSS\**\*" />
+		<UpToDateCheckInput Include="Platforms\WebAssembly\WasmScripts\**\*" />
+
+		<Content Include="Fonts\*.woff2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="Assets\*.*" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<LinkerDescriptor Include="Platforms\WebAssembly\LinkerConfig.xml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.TypeScript.MSBuild">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Newtonsoft.Json" />
+		<PackageReference Include="Uno.Monaco.Editor" />
+
+		<PackageReference Include="Uno.CommunityToolkit.WinUI.DeveloperTools" />
+		<PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls" />
+		<PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls.DataGrid" />
+
+		<PackageReference Include="Uno.Core.Extensions.Compatibility" />
+
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Filter" />
+	</ItemGroup>
+
+</Project>

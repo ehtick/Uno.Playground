@@ -1,0 +1,17 @@
+global using System.Collections.Immutable;
+global using System.Globalization;
+global using System.Runtime.InteropServices.WindowsRuntime;
+global using System.Text;
+global using Microsoft.Extensions.Logging;
+global using Microsoft.UI.Xaml;
+global using Microsoft.UI.Xaml.Controls;
+global using Microsoft.UI.Xaml.Controls.Primitives;
+global using Microsoft.UI.Xaml.Data;
+global using Microsoft.UI.Xaml.Input;
+global using Microsoft.UI.Xaml.Media;
+global using Microsoft.UI.Xaml.Navigation;
+global using Uno.Extensions;
+global using Windows.Foundation;
+global using Windows.Foundation.Collections;
+global using Windows.UI;
+global using ApplicationExecutionState = Windows.ApplicationModel.Activation.ApplicationExecutionState;

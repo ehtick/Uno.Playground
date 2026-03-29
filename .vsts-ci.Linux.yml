@@ -1,13 +1,10 @@
 jobs:
 - job: linux
-  container: unoplatform/wasm-build:3.0
-
   pool:
     vmImage: 'ubuntu-latest'
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
-    DotnetRuntimePath: /usr/share/dotnet
 
   steps:
   - checkout: self
@@ -15,18 +12,28 @@ jobs:
 
   - task: UseDotNet@2
     displayName: 'Use .NET SDK'
+    retryCountOnTaskFailure: 3
     inputs:
       packageType: sdk
-      version: 9.0.100
+      version: 10.0.105
       includePreviewVersions: true
+
+  - bash: |
+      dotnet tool update --global uno.check --prerelease --add-source https://api.nuget.org/v3/index.json
+    displayName: 'Install uno-check'
+    retryCountOnTaskFailure: 3
+
+  - bash: |
+      uno-check --verbose --ci --non-interactive --fix --skip gtk3 --skip androidemulator --skip dotnetnewunotemplates --skip unosdk --skip openjdk
+    displayName: 'Install .NET Workloads'
+    retryCountOnTaskFailure: 3
 
   - template: build/canary-updater.yml
   - template: build/gitversion.yml
 
-  - script: |
+  - bash: |
       cd $(build.sourcesdirectory)
-      dotnet publish -c Release $(build.sourcesdirectory)/src/Uno.Playground.WASM/Uno.Playground.WASM.csproj  "/p:InformationalVersion=$GITVERSION_INFORMATIONALVERSION" /bl:$(build.artifactstagingdirectory)/linux.binlog
-
+      dotnet publish -c Release src/Uno.Playground/Uno.Playground.csproj -f net10.0-browserwasm "/p:InformationalVersion=$GITVERSION_INFORMATIONALVERSION" -o "$(build.artifactstagingdirectory)/wasm-publish" -bl:$(build.artifactstagingdirectory)/linux.binlog
     env:
       GITVERSION_FullSemVer: $(GITVERSION_FullSemVer)
     displayName: 'Build Playground'
@@ -34,7 +41,7 @@ jobs:
   - task: CopyFiles@2
     displayName: 'Publish Wasm Binaries'
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/Uno.Playground.WASM/bin/Release/net9.0/publish/wwwroot
+      SourceFolder: $(build.artifactstagingdirectory)/wasm-publish/wwwroot
       Contents: '**/*.*'
       TargetFolder: $(build.artifactstagingdirectory)/wasm
       CleanTargetFolder: false
@@ -42,6 +49,7 @@ jobs:
       flattenFolders: false
 
   - task: PublishBuildArtifacts@1
+    condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: drop

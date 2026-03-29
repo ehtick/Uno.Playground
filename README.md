@@ -1,29 +1,37 @@
 # Uno Playground
 
-This is the code for published apps on stores (_Uno Gallery_) - Windows, Android & iOS
-and for the _Uno Playground_ <http://playground.platform.uno>.
+A browser-based sandbox for trying Uno Platform controls and layouts. Edit XAML markup and data context, then see the result rendered instantly via WebAssembly.
+Try it at <https://playground.platform.uno>.
 
-## Building it
+## Solution structure
 
-You'll need Visual Studio 2017 v15.5+ to compile it. You also need those components:
+| Project | Description |
+|---------|-------------|
+| `src/Uno.Playground` | Main Playground app (Uno.Sdk single-project, WebAssembly) |
+| `src/Uno.Playground.Api` | Azure Functions v1 backend (`net461`) |
 
-- Web Site development (aspnet core)
-- .NET Core cross-platform projects
-- Xamarin SDK (if you want to test iOS & Android)
+## Prerequisites
 
-## UWP
+- .NET 10.0 SDK (or the version pinned in `global.json`)
+- Uno.Sdk (resolved automatically via `global.json`)
 
-To run the UWP project, simply select the project `Uno.UI.Demo.UWP` as starting
-project.
+## Building
 
-## Android & iOS
+```bash
+dotnet restore src/Uno.Playground.slnx
+dotnet build src/Uno.Playground.slnx
+```
 
-To run Xamarin versions, select the project `Uno.UI.Demo.Droid` or `Uno.UI.Demo.iOS`
-as starting project. For iOS, don't forget to pick emulator or device. You may need
-additionnal provisionning configuration to run it on a device.
+## Running locally (WebAssembly)
 
-## Wasm
+```bash
+dotnet run --project src/Uno.Playground/Uno.Playground.csproj
+```
 
-Run the project `Uno.UI.Demo.AspnetShell` - that's the `platform.uno` web site
-and go to the url `/Playground/index.html` once it's started (don't use the link
-in the site, it will bring you to the public version).
+## Publishing
+
+```bash
+dotnet publish src/Uno.Playground/Uno.Playground.csproj -c Release
+```
+
+The published output is a static WebAssembly site deployed via Azure Static Web Apps.

@@ -15,39 +15,37 @@ jobs:
     lfs: true
 
   - task: UseDotNet@2
-    displayName: 'Use .NET Core sdk'
-    inputs:
-      packageType: sdk
-      version: 2.1.x
-      
-  - task: UseDotNet@2
     displayName: 'Use .NET SDK'
     inputs:
       packageType: sdk
-      version: 9.0.100
+      version: 10.0.105
       includePreviewVersions: true
+
+  - task: UseDotNet@2
+    displayName: 'Install .NET Core 2.1 runtime (for Azure Functions v1 SDK)'
+    inputs:
+      packageType: runtime
+      version: 2.1.x
+
+  - pwsh: |
+      dotnet workload install wasm-tools
+    displayName: 'Install WASM workloads'
+    retryCountOnTaskFailure: 3
 
   - template: build/canary-updater.yml
   - template: build/gitversion.yml
 
   - script: |
       cd $(build.sourcesdirectory)
-      dotnet publish -c Release $(build.sourcesdirectory)/src/Uno.Playground-playground-only.slnf  "/p:InformationalVersion=$GITVERSION_INFORMATIONALVERSION" /bl:$(build.artifactstagingdirectory)/playground.binlog
+      dotnet publish -c Release src/Uno.Playground/Uno.Playground.csproj -f net10.0-browserwasm "/p:InformationalVersion=%GITVERSION_INFORMATIONALVERSION%" /bl:$(build.artifactstagingdirectory)/playground.binlog
 
     displayName: 'Build Playground'
 
-  - task: MSBuild@1
-    inputs:
-      solution: src\Uno.Playground-api-only.slnf
-      msbuildLocationMethod: version
-      msbuildVersion: latest
-      msbuildArchitecture: x86
-      msbuildArguments: /r /p:CheckExclusions=True /p:Configuration=Release /bl:$(build.artifactstagingdirectory)\build.binlog
-      clean: false
-      maximumCpuCount: true
-      restoreNugetPackages: false
-      logProjectEvents: false
-      createLogFile: false
+  - script: |
+      cd $(build.sourcesdirectory)
+      dotnet build -c Release src/Uno.Playground.Api/Uno.Playground.Api.csproj /bl:$(build.artifactstagingdirectory)/build.binlog
+
+    displayName: 'Build API'
 
   - task: DotNetCoreCLI@2
     inputs:

@@ -1,0 +1,19 @@
+<linker>
+	<assembly fullname="Uno.Playground" />
+	<assembly fullname="Newtonsoft.Json" />
+	<assembly fullname="System.Core">
+		<!-- This is required by Newtonsoft.Json and any expression.Compile caller -->
+		<type fullname="System.Linq.Expressions*" />
+	</assembly>
+
+	<!-- Explicitly referenced Community Toolkit packages -->
+	<assembly fullname="Uno.CommunityToolkit.WinUI.UI.Controls" />
+	<assembly fullname="Uno.CommunityToolkit.WinUI.UI.Controls.DataGrid" />
+	<assembly fullname="Uno.CommunityToolkit.WinUI.DeveloperTools" />
+
+	<!-- Monaco Editor -->
+	<assembly fullname="Uno.Monaco.Editor" />
+
+	<!-- Logging -->
+	<assembly fullname="Microsoft.Extensions.Logging.Console" />
+</linker>
