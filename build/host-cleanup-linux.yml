@@ -1,27 +1,7 @@
-# Reclaim disk space on Linux CI hosts to prevent "no space left on device" failures.
-# Usage (Azure DevOps step template):
-#   - template: build/host-cleanup-linux.yml
-#
-# This template is safe on all agents — the condition restricts it to Linux only.
-
+# Reusable AzDO template: Cleanup unused dependencies on Linux CI agents.
+# Calls the shared host-cleanup-linux.sh script to avoid duplication with GitHub Actions.
 steps:
   - bash: |
-      set -euo pipefail
-      echo "=== Disk usage BEFORE cleanup ==="
-      df -h /
-
-      # ── Remove large optional toolchains ──
-      sudo rm -rf ~/.cargo ~/.rustup ~/.dotnet /usr/share/swift \
-                   /opt/microsoft/msedge /usr/local/.ghcup /usr/lib/mono \
-                   /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
-
-      # ── Snap packages (each is 200-500 MB) ──
-      sudo snap remove --purge lxd       2>/dev/null || true
-      sudo snap remove --purge core20    2>/dev/null || true
-      sudo snap remove --purge snapd     2>/dev/null || true
-      sudo apt-get purge -y snapd       2>/dev/null || true
-
-      echo "=== Disk usage AFTER cleanup ==="
-      df -h /
-    displayName: 'Reclaim disk space (Linux)'
+      bash "$(Build.SourcesDirectory)/build/scripts/host-cleanup-linux.sh"
+    displayName: Cleanup unused host dependencies
     condition: eq(variables['Agent.OS'], 'Linux')
