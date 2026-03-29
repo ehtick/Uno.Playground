@@ -1,0 +1,33 @@
+# Reclaim disk space on Linux CI hosts to prevent "no space left on device" failures.
+# Usage (composite action — call from any workflow job):
+#   - uses: ./.github/actions/host-cleanup-linux
+#
+# The step condition restricts execution to Linux runners only.
+
+name: 'Host Cleanup (Linux)'
+description: 'Free disk space on Ubuntu runners by removing unused toolchains'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Reclaim disk space (Linux)
+      if: runner.os == 'Linux'
+      shell: bash
+      run: |
+        set -euo pipefail
+        echo "=== Disk usage BEFORE cleanup ==="
+        df -h /
+
+        # ── Remove large optional toolchains ──
+        sudo rm -rf ~/.cargo ~/.rustup ~/.dotnet /usr/share/swift \
+                     /opt/microsoft/msedge /usr/local/.ghcup /usr/lib/mono \
+                     /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+
+        # ── Snap packages (each is 200-500 MB) ──
+        sudo snap remove --purge lxd       2>/dev/null || true
+        sudo snap remove --purge core20    2>/dev/null || true
+        sudo snap remove --purge snapd     2>/dev/null || true
+        sudo apt-get purge -y snapd       2>/dev/null || true
+
+        echo "=== Disk usage AFTER cleanup ==="
+        df -h /

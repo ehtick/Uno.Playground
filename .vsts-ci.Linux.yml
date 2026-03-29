@@ -10,6 +10,8 @@ jobs:
   - checkout: self
     clean: true
 
+  - template: build/host-cleanup-linux.yml
+
   - task: UseDotNet@2
     displayName: 'Use .NET SDK'
     retryCountOnTaskFailure: 3
