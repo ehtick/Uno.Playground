@@ -25,6 +25,8 @@ jobs:
           fetch-depth: 0 # Required for gitversion
           submodules: true
 
+      - uses: ./.github/actions/host-cleanup-linux
+
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v3.1.11
         with:
